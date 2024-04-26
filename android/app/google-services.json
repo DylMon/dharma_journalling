@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "38177926896",
+    "project_id": "dharma-journaling",
+    "storage_bucket": "dharma-journaling.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:38177926896:android:424fd6b6ce5504dcf71c35",
+        "android_client_info": {
+          "package_name": "com.example.dharma_00_01"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD08idqx07-QIOcJmQuG9Orplo1kNM8gIM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
