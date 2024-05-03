@@ -104,6 +104,66 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ) ?? false;
   }
 
+
+
+  Future<void> _deleteAccount() async {
+    final bool confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Account', style: GoogleFonts.mukta(color: Colors.black)),
+          content: Text('Are you sure you want to delete your account and all data?', style: GoogleFonts.mukta(color: Colors.black)),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context). pop(false),
+              child: Text('No'),
+            ),
+            TextButton(
+              onPressed: () => _confirmDelete(),
+              child: Text('Yes'),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+  }
+
+  Future<void> _confirmDelete() async {
+    try {
+      Navigator.of(context).pop(); // Close the dialog
+      final user = FirebaseAuth.instance.currentUser;
+      await user?.delete(); // Delete the Firebase user
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear(); // Clear all SharedPreferences data
+      Navigator.of(context).pushAndRemoveUntil( // Redirect user
+        MaterialPageRoute(builder: (_) => SignInScreen()),
+            (Route<dynamic> route) => false,
+      );
+    } catch (e) {
+      // Handle errors, e.g., show a dialog or a snackbar
+      _showErrorDialog('Failed to delete account. Please try again.');
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Error'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop(); // Close the dialog
+            },
+            child: Text('Okay'),
+          ),
+        ],
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,6 +187,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ElevatedButton(
                     onPressed: _signOut,
                     child: Text('Sign Out'),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _deleteAccount, // Call the delete account function
+                    child: Text('Delete Account'),
                   ),
                 ],
               ),

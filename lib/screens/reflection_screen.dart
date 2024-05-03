@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dharma_00_01/screens/completion_screen.dart';
 import 'data_manager.dart';
 import 'animated_background.dart';
+import 'package:firebase_auth/firebase_auth.dart';  // Import FirebaseAuth
 
 class ReflectionScreen extends StatefulWidget {
   final int mood;
@@ -13,11 +14,20 @@ class ReflectionScreen extends StatefulWidget {
 
 class _ReflectionScreenState extends State<ReflectionScreen> {
   TextEditingController _textController = TextEditingController();
+  String? userId;  // Variable to store the current user's ID
+
+  @override
+  void initState() {
+    super.initState();
+    userId = FirebaseAuth.instance.currentUser?.uid;  // Get the current user's ID
+  }
 
   void _saveEntryAndNavigate() async {
-    MoodEntry entry = MoodEntry(date: DateTime.now(), mood: widget.mood, journalEntry: _textController.text);
+    if (userId == null) return;  // Ensure user ID is not null
+
+    MoodEntry entry = MoodEntry(date: DateTime.now(), mood: widget.mood, journalEntry: _textController.text, userId: userId!);
     await DataManager().addMoodEntry(entry);
-    int reflectionCount = await DataManager().countReflections(DateTime.now());
+    int reflectionCount = await DataManager().countReflections(DateTime.now(), userId!);
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => CompletionScreen(reflectionCount: reflectionCount))
@@ -49,7 +59,7 @@ class _ReflectionScreenState extends State<ReflectionScreen> {
                     keyboardType: TextInputType.multiline,
                     decoration: InputDecoration(
                       hintText: "Type your reflections here...",
-                      hintStyle: TextStyle(color: Colors.white60), // Lighter shade for hint
+                      hintStyle: TextStyle(color: Colors.white60),
                       border: OutlineInputBorder(),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
@@ -60,12 +70,12 @@ class _ReflectionScreenState extends State<ReflectionScreen> {
                       counterText: "",
                     ),
                     maxLength: 500,
-                    style: TextStyle(color: Colors.white), // Typable text color
+                    style: TextStyle(color: Colors.white),
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _saveEntryAndNavigate,
-                    child: Text('Complete', style: TextStyle(color: Colors.black)), // Keep button text as it is
+                    child: Text('Complete', style: TextStyle(color: Colors.black)),
                   ),
                 ],
               ),

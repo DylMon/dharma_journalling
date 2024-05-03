@@ -4,6 +4,7 @@ import 'data_manager.dart';
 import 'color_config.dart';
 import 'package:intl/intl.dart';
 import 'animated_background.dart';
+import 'package:firebase_auth/firebase_auth.dart';  // Import FirebaseAuth
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -12,22 +13,27 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   Map<DateTime, int> moodData = {};
+  String? userId;  // Variable to store the current user's ID
 
   @override
   void initState() {
     super.initState();
-    fetchMoodData();
+    userId = FirebaseAuth.instance.currentUser?.uid;  // Get the current user's ID
+    if (userId != null) {
+      fetchMoodData(userId!);
+    }
   }
 
-  void fetchMoodData() async {
-    Map<DateTime, int> fetchedData = await DataManager().getMoodMapForHeatmap();
+  void fetchMoodData(String userId) async {
+    Map<DateTime, int> fetchedData = await DataManager().getMoodMapForHeatmap(userId);
     setState(() {
       moodData = fetchedData;
     });
   }
 
   void _handleDateClick(DateTime date) async {
-    var entries = await DataManager().getMoodEntriesByDate(date);
+    if (userId == null) return;  // Ensure user ID is not null
+    var entries = await DataManager().getMoodEntriesByDate(date, userId!);
     String formattedDate = DateFormat('EEEE, MMMM d').format(date);
     showModalBottomSheet(
       context: context,
@@ -90,6 +96,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (userId == null) {
+      return Scaffold(
+        body: Center(
+          child: Text("Please sign in to view this page."),
+        ),
+      );
+    }
     return Scaffold(
       body: Stack(
         children: [
@@ -98,7 +111,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             child: SingleChildScrollView(
               child: Center(
                 child: StreamBuilder<Map<DateTime, int>>(
-                  stream: DataManager().getMoodMapStream(),
+                  stream: DataManager().getMoodMapStream(userId!),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return HeatMapCalendar(

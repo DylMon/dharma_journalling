@@ -63,6 +63,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '38177926896',
     projectId: 'dharma-journaling',
     storageBucket: 'dharma-journaling.appspot.com',
-    iosBundleId: 'com.example.dharma0001',
+    iosBundleId: 'com.cppcs4750.dharma0001',
   );
 }

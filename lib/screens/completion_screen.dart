@@ -14,7 +14,7 @@ class CompletionScreen extends StatelessWidget {
     if (reflectionCount == 1) {
       message = "Good job on reflecting today. Come back whenever you like.";
     } else {
-      message = "Well done, this is your ${ordinal(reflectionCount)} time today. Your future self thanks you.";
+      message = "Well done, this is your ${ordinal(reflectionCount)} time today. Well done.";
     }
 
     return Scaffold(

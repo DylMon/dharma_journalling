@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'registration_screen.dart';
 import 'animated_background.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,7 +9,6 @@ class FirstLaunchScreen extends StatefulWidget {
 }
 
 class _FirstLaunchScreenState extends State<FirstLaunchScreen> {
-  TextEditingController _nameController = TextEditingController();
   double _welcomeOpacity = 1.0;
   bool _showWelcome = true;
   bool _showIntermediateScreen = false;
@@ -29,13 +27,6 @@ class _FirstLaunchScreenState extends State<FirstLaunchScreen> {
     });
   }
 
-  _saveNameAndProceed(String name) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userName', name);
-    await prefs.setBool('isFirstLaunch', false);
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegistrationScreen()));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,9 +40,7 @@ class _FirstLaunchScreenState extends State<FirstLaunchScreen> {
               duration: Duration(seconds: 2),
               child: Text('Welcome', style: GoogleFonts.mukta(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
             )
-                : _showIntermediateScreen
-                ? _buildIntermediateScreen()
-                : _buildNamePromptScreen(),
+                : _buildIntermediateScreen(),
           ),
         ],
       ),
@@ -71,27 +60,9 @@ class _FirstLaunchScreenState extends State<FirstLaunchScreen> {
           ),
         ),
         ElevatedButton(
-          onPressed: () => setState(() => _showIntermediateScreen = false),
-          child: Text('Continue', style: GoogleFonts.mukta()),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNamePromptScreen() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('Now, what should I call you?', style: GoogleFonts.mukta(fontSize: 20, color: Colors.white)),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            controller: _nameController,
-            decoration: InputDecoration(hintText: 'Enter your name', hintStyle: GoogleFonts.mukta(color: Colors.white)),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () => _saveNameAndProceed(_nameController.text),
+          onPressed: () {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegistrationScreen()));
+          },
           child: Text('Continue', style: GoogleFonts.mukta()),
         ),
       ],
