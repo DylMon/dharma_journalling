@@ -1,16 +1,4 @@
 # dharma_00_01
 
-A new Flutter project.
+Dharma is a designed to help you track your own mental state throughout the day by reflecting on your mood and making brief journal entries. Entries can be viewed on a calendar to help track one's own emotional patterns. User data is stored using Firbase Authentication and Cloud Firestore.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
